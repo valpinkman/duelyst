@@ -21,7 +21,7 @@ monorepo, and the decisions behind it.
 ## Audits
 
 - [Backbone](BACKBONE_AUDIT.md) — what Backbone actually does here, and why
-  `backfire` is the real lock-in
+  `backfire` was the real lock-in (replaced by `firebase_sync.ts`, #51)
 - [Folder reorg](REORG_AUDIT.md) — the audit behind moving `app/sdk` and
   `app/common` out to `packages/`
 

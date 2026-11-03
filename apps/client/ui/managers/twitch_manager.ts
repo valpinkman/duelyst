@@ -18,6 +18,7 @@ var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
 var NotificationModel = require('../models/notification');
 var DuelystFirebase = require('../extensions/duelyst_firebase');
+var { dbRef } = require('../../firebase');
 var DuelystBackbone = require('../extensions/duelyst_backbone');
 var Analytics = require('@duelyst/common/analytics');
 var AnalyticsTracker = require('../../analyticsTracker');
@@ -27,6 +28,7 @@ var NavigationManager = require('./navigation_manager');
 var ProfileManager = require('./profile_manager');
 var NotificationsManager = require('./notifications_manager');
 var Manager = require('./manager');
+var { requestJson } = require('@duelyst/common/request');
 
 var TwitchManager = Manager.extend({
   unreadTwitchRewardsQueue: null, // Queue of unclaimed twitch rewards to be displayed next time we reach main menu
@@ -48,9 +50,7 @@ var TwitchManager = Manager.extend({
         var userId = ProfileManager.getInstance().get('id');
         var username = ProfileManager.getInstance().get('username');
         _self._twitchStatusModel = new DuelystFirebase.Model(null, {
-          firebase: new Firebase(
-            process.env.FIREBASE_URL + '/user-twitch-rewards/' + userId + '/status',
-          ),
+          firebase: dbRef('user-twitch-rewards/' + userId + '/status'),
         });
 
         _self._markAsReadyWhenModelsAndCollectionsSynced([_self._twitchStatusModel]);
@@ -82,7 +82,7 @@ var TwitchManager = Manager.extend({
       if (lastClaimedAt == null || lastRewardEarnedAt > lastClaimedAt) {
         return new Promise(
           function (resolve, reject) {
-            var request = $.ajax({
+            var request = requestJson({
               url: process.env.API_URL + '/api/me/rewards/twitch_rewards/unread',
               type: 'GET',
               contentType: 'application/json',
@@ -101,7 +101,7 @@ var TwitchManager = Manager.extend({
             //  dataType: 'json'
             // });
 
-            request.done(
+            request.then(
               function (response) {
                 var allPromises = [];
 
@@ -116,13 +116,12 @@ var TwitchManager = Manager.extend({
                   resolve();
                 });
               }.bind(this),
+              function (response) {
+                var errorMessage =
+                  (response.responseJSON && response.responseJSON.message) ||
+                  'Retrieving Twitch Rewards Failed';
+              },
             );
-
-            request.fail(function (response) {
-              var errorMessage =
-                (response.responseJSON && response.responseJSON.message) ||
-                'Retrieving Twitch Rewards Failed';
-            });
           }.bind(this),
         );
       }
@@ -228,13 +227,14 @@ var TwitchManager = Manager.extend({
     );
 
     if (twitchReward.claimed_at == null) {
-      var request = $.ajax({
+      // fire and forget, as the jqXHR was
+      requestJson({
         url:
           process.env.API_URL + '/api/me/rewards/twitch_rewards/' + twitchReward.twitch_reward_id,
         type: 'PUT',
         contentType: 'application/json',
         dataType: 'json',
-      });
+      }).catch(function () {});
     }
   },
 

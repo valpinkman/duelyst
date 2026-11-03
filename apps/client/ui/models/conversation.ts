@@ -1,6 +1,8 @@
 'use strict';
 
 var Messages = require('../collections/messages');
+var DuelystFirebase = require('../extensions/duelyst_firebase');
+var { dbRef, query, serverTimestamp, startAt } = require('../../firebase');
 var Logger = require('@duelyst/common/logger');
 var Analytics = require('@duelyst/common/analytics');
 var ChatManager = require('../managers/chat_manager');
@@ -10,7 +12,7 @@ var Conversation = Backbone.Model.extend({
   messages: null, // chat messages
 
   initialize: function (firebase) {
-    var messagesFb = new Firebase(this.get('firebaseURL')).child('messages').startAt(Date.now());
+    var messagesFb = query(dbRef(this.get('firebaseURL'), 'messages'), startAt(Date.now()));
     this.messages = new Messages(null, { firebase: messagesFb });
     this.listenTo(this.messages, 'add', this.onMessageReceived);
   },
@@ -19,14 +21,14 @@ var Conversation = Backbone.Model.extend({
     // only send message if buddy is not offline
     var buddyId = this.get('userId');
     if (ChatManager.getInstance().getBuddiesCollection().getIsBuddyOnlineById(buddyId)) {
-      this.messages.create({
+      this._pushMessage({
         fromId: ProfileManager.getInstance().get('id'),
         toId: buddyId,
         gameId: gameId,
         generalId: generalId,
         body: messageBody || 'check out my replay',
-        timestamp: Firebase.ServerValue.TIMESTAMP,
-        '.priority': Firebase.ServerValue.TIMESTAMP,
+        timestamp: serverTimestamp(),
+        '.priority': serverTimestamp(),
       });
 
       // analytics call
@@ -40,12 +42,12 @@ var Conversation = Backbone.Model.extend({
     // only send message if buddy is not offline
     var buddyId = this.get('userId');
     if (ChatManager.getInstance().getBuddiesCollection().getIsBuddyOnlineById(buddyId)) {
-      this.messages.create({
+      this._pushMessage({
         fromId: ProfileManager.getInstance().get('id'),
         toId: buddyId,
         body: messageBody,
-        timestamp: Firebase.ServerValue.TIMESTAMP,
-        '.priority': Firebase.ServerValue.TIMESTAMP,
+        timestamp: serverTimestamp(),
+        '.priority': serverTimestamp(),
       });
 
       // analytics call
@@ -53,6 +55,17 @@ var Conversation = Backbone.Model.extend({
         category: Analytics.EventCategory.Chat,
       });
     }
+  },
+
+  /*
+   * Writes straight to Firebase; the message reaches `this.messages` through
+   * its child_added listener, as it did when this went through backfire's
+   * create(). The attributes go through the Message model first, as create()
+   * did, so its defaults still fill any that are missing.
+   */
+  _pushMessage: function (attributes) {
+    var message = new this.messages.model(attributes);
+    DuelystFirebase.pushChild(this.messages, message.toJSON());
   },
 
   onMessageReceived: function (m) {

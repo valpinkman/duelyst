@@ -11,7 +11,7 @@ var UtilsPosition = require('@duelyst/common/utils/utils_position');
 var UtilsEngine = require('@duelyst/common/utils/utils_engine');
 var Animations = require('../animations');
 var GamePlayerTmpl = require('../../templates/layouts/game_player.hbs');
-var Firebase = require('../../../firebase');
+var { dbRef, onValue } = require('../../../firebase');
 var ProfileManager = require('../../managers/profile_manager');
 var i18next = require('i18next');
 var OpponentPlayerPopoverLayout = require('./game_opponent_player_popover');
@@ -211,9 +211,9 @@ var GamePlayerLayout = Backbone.Marionette.LayoutView.extend({
 
   onDestroy: function () {
     // remove firebase models
-    if (this._firebase_rank_model != null) {
-      this._firebase_rank_model.off();
-      this._firebase_rank_model = null;
+    if (this._stopRankListener != null) {
+      this._stopRankListener();
+      this._stopRankListener = null;
     }
   },
 
@@ -387,29 +387,26 @@ var GamePlayerLayout = Backbone.Marionette.LayoutView.extend({
   },
 
   bindRank: function () {
-    if (this._firebase_rank_model != null) {
-      this._firebase_rank_model.off();
-      this._firebase_rank_model = null;
+    if (this._stopRankListener != null) {
+      this._stopRankListener();
+      this._stopRankListener = null;
     }
 
     if (SDK.GameSession.getInstance().isRanked()) {
       // show rank for ranked games
-      this._firebase_rank_model = new Firebase(process.env.FIREBASE_URL)
-        .child('user-ranking')
-        .child(this.model.get('playerId'))
-        .child('current')
-        .child('rank')
-        .once(
-          'value',
-          function (snapshot) {
-            try {
-              this.ui.$rank.text(snapshot.val());
-            } catch (error) {
-              //
-              console.error('There was an error binding user ranking in-game.', error);
-            }
-          }.bind(this),
-        );
+      // compat's once() returned a promise, which has no off(): this held one
+      this._stopRankListener = onValue(
+        dbRef('user-ranking', this.model.get('playerId'), 'current', 'rank'),
+        function (snapshot) {
+          try {
+            this.ui.$rank.text(snapshot.val());
+          } catch (error) {
+            //
+            console.error('There was an error binding user ranking in-game.', error);
+          }
+        }.bind(this),
+        { onlyOnce: true },
+      );
     } else {
       // remove rank
       this.ui.$rank.remove();

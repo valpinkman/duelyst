@@ -16,7 +16,7 @@ var NotificationsManager = require('../../managers/notifications_manager');
 var Animations = require('../animations');
 var ProgressionManager = require('../../managers/progression_manager');
 var ProfileManager = require('../../managers/profile_manager');
-var BuddiesLayout = require('../layouts/buddies');
+var BuddiesShell = require('../../shells/buddies_shell');
 var SettingsMenuView = require('./settings_menu');
 
 /**
@@ -194,7 +194,7 @@ var UtilityMenuItemView = Backbone.Marionette.CompositeView.extend({
   },
 
   toggleBuddyList: function () {
-    NavigationManager.getInstance().toggleModalViewByClass(BuddiesLayout, null);
+    NavigationManager.getInstance().toggleModalViewByClass(BuddiesShell, null);
   },
 
   toggleSettingsMenu: function () {

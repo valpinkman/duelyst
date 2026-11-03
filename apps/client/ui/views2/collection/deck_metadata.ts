@@ -3,7 +3,6 @@
 var SDK = require('@duelyst/sdk');
 var CONFIG = require('@duelyst/common/config');
 var RSX = require('@duelyst/data/resources');
-var Firebase = require('../../../firebase');
 var Animations = require('../../views/animations');
 var NavigationManager = require('../../managers/navigation_manager');
 var InventoryManager = require('../../managers/inventory_manager');

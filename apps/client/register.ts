@@ -23,8 +23,6 @@ const userAgent = uaparser.getResult();
 //
 const App = new Backbone.Marionette.Application();
 
-// require Firebase via browserify but temporarily alias it global scope
-const Firebase = (window.Firebase = require('./firebase'));
 const moment = require('moment');
 const semver = require('semver');
 const querystring = require('query-string');
@@ -82,6 +80,7 @@ const AnnouncementModalView = require('./ui/views/item/announcement_modal');
 
 const AnalyticsTracker = require('./analyticsTracker');
 const PromiseUtils = require('@duelyst/common/utils/utils_promise');
+const { setDefaultHeaders } = require('@duelyst/common/request');
 
 // require the Handlebars Template Helpers extension here since it modifies core Marionette code
 require('./ui/extensions/handlebars_template_helpers');
@@ -271,13 +270,15 @@ App.onLogin = function (data) {
   // save token to localStorage
   Storage.set('token', data.token);
 
-  // setup ajax headers for jquery/backbone requests
-  $.ajaxSetup({
-    headers: {
-      Authorization: `Bearer ${data.token}`,
-      'Client-Version': window.BUILD_VERSION,
-    },
-  });
+  // setup ajax headers for jquery/backbone requests. jQuery still owns
+  // Backbone.sync, so both header registries have to be told (see
+  // packages/common/request).
+  const sessionHeaders = {
+    Authorization: `Bearer ${data.token}`,
+    'Client-Version': window.BUILD_VERSION,
+  };
+  $.ajaxSetup({ headers: sessionHeaders });
+  setDefaultHeaders(sessionHeaders);
 
   // this is neccesary to include here to track their first login
   // application.coffee will be the second login in a redirect flow
@@ -912,11 +913,8 @@ App.on('start', (options) => {
 // grabs configuration from server we're running on and call App.start()
 App.setup = function () {
   // mark all requests with buld version
-  $.ajaxSetup({
-    headers: {
-      'Client-Version': process.env.VERSION,
-    },
-  });
+  $.ajaxSetup({ headers: { 'Client-Version': process.env.VERSION } });
+  setDefaultHeaders({ 'Client-Version': process.env.VERSION });
 
   return App.start();
 };

@@ -493,13 +493,23 @@ step it describes, so it can never drift from the code.
      keys), all five entrypoints resolving from `build/`, api and sp containers rebuilt and serving
      HTTP 200, `pnpm migrate:latest:built` in-container, and 3/3 e2e.
 
-  5. **Optional, deliberately not started:** Backbone/Marionette/jQuery. That is a UI rewrite,
-     not an upgrade, and was declined once already. Audited 2026-08-21 —
-     [`BACKBONE_AUDIT.md`](BACKBONE_AUDIT.md). The short version: Backbone is the metagame shell
-     only (`app/sdk` 0 files, `app/view` 1 of 223, `app/ui` 151 of 204), the Router and REST
-     `sync` are entirely unused, and the real lock-in is `backfire` — a 2015 unmaintained
-     Firebase-2.x binding shipped as an 8 KB blob, reached by 53 call sites in 30 files. That
-     audit is the delegable piece; the rewrite still is not.
+  5. **Marionette/jQuery removal — planned, not started.** Audited 2026-08-21
+     ([`BACKBONE_AUDIT.md`](BACKBONE_AUDIT.md)): Backbone is the metagame shell only (`app/sdk` 0
+     files, `app/view` 1 of 223, `app/ui` 151 of 204), the Router and REST `sync` are entirely
+     unused, and the real lock-in is `backfire` — a 2015 unmaintained Firebase-2.x binding shipped
+     as an 8 KB blob, reached by 53 call sites in 30 files.
+
+     That audit recommended against the rewrite. Scoped against explicit goals it was reopened and
+     decided — see [`BACKBONE_REMOVAL_PLAN.md`](BACKBONE_REMOVAL_PLAN.md) for the 13 decisions, the
+     measurements behind them and the step sequence. **Done means zero Marionette, zero jQuery,
+     zero `backfire`, zero Handlebars, with Backbone kept and upgraded** — Backbone is not the
+     target (1.6.1 is maintained; removing it costs 1,011 `.get('x')` sites for no supply-chain
+     gain). New UI is Lit 3.3.3 in light DOM behind a Marionette shell view, screen by screen.
+
+     **The blocker is the safety net, not the framework:** `app/ui` is 44,292 lines with **zero
+     tests**, and the one e2e covers login → practice game only. Step 1 is a Playwright screen tour
+     over all 23 layouts, written against the current Marionette build. Nothing migrates before it
+     is green.
 
 - **Known dirty state:** none.
 

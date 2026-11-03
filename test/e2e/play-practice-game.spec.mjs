@@ -1,4 +1,11 @@
 import { test, expect } from '@playwright/test';
+import { watchConsole } from './helpers/console.mjs';
+import {
+  register,
+  skipTutorialToMainMenu,
+  uniqueUsername,
+  waitForClientBoot,
+} from './helpers/session.mjs';
 
 /*
  * The check this repo could not make automatically before: does the game
@@ -9,55 +16,10 @@ import { test, expect } from '@playwright/test';
  * renamed files (shaders silently gone), an env value resolved under the wrong
  * NODE_ENV (client calling the wrong API host), a require whose extension went
  * stale (server dead on boot). So the assertions below deliberately include
- * "no console errors": that single line is the one that catches them.
+ * "no console errors": that single line is the one that catches them. What
+ * counts as noise - and why a 404 under resources/ never does - is in
+ * helpers/console.mjs, shared with screen-tour.spec.mjs.
  */
-
-const CONSOLE_NOISE = [
-  // dev-only, and unrelated to whether the game works
-  /Failed to load resource: the server responded with a status of 404/,
-  /*
-   * `POST /session/username_available` answers "this username is taken" with
-   * **401**, and the client handles that as a normal answer:
-   *     // 401 result suggests username is bad or unavailable
-   *     if (res.status === 401) { return false; }
-   * The browser logs every 401 as a failed resource regardless, so a perfectly
-   * healthy registration can emit one depending on when the availability check
-   * lands relative to the account being created. That made this suite fail
-   * intermittently.
-   *
-   * Allowlisting the line does NOT blind us to a real auth failure: if
-   * authentication actually broke, the functional assertions below - reaching
-   * the welcome screen, starting a game, the AI taking its turn - would fail
-   * first and far more loudly. The console check is here for uncaught JS
-   * errors, not for HTTP statuses the client deliberately interprets.
-   *
-   * (401 for "already taken" is an upstream API wart; 409 Conflict is what it
-   * means. Changing it would be an API contract change, not a test fix.)
-   */
-  /Failed to load resource: the server responded with a status of 401/,
-];
-
-/** Collect page errors so a test can assert the client booted cleanly. */
-function watchConsole(page) {
-  const errors = [];
-  page.on('console', (msg) => {
-    if (msg.type() !== 'error') return;
-    const text = msg.text();
-    if (CONSOLE_NOISE.some((re) => re.test(text))) return;
-    errors.push(text);
-  });
-  page.on('pageerror', (err) => errors.push(String(err)));
-  return errors;
-}
-
-/** The client boots cocos2d and streams assets; wait for the SDK to be live. */
-async function waitForClientBoot(page) {
-  await page.waitForFunction(
-    () => typeof window.SDK !== 'undefined' && window.SDK.GameSession != null,
-    null,
-    { timeout: 120_000 },
-  );
-}
 
 /** Read game state straight from the SDK singleton the client exposes. */
 function gameState(page) {
@@ -92,46 +54,15 @@ test.describe('the game runs', () => {
     page,
   }) => {
     const errors = watchConsole(page);
-    // unique per run: registration is part of what we are testing, and reusing
-    // a name would fail on the second run
-    const username = `e2e${Date.now().toString(36)}`.slice(0, 18);
+    const username = uniqueUsername();
     const password = 'e2e-duelyst-pw';
 
     await page.goto('/');
     await waitForClientBoot(page);
 
-    // --- register ---------------------------------------------------------
-    // the login and registration forms are both in the DOM, so scope to the
-    // registration panel
-    await page.getByRole('button', { name: /create account/i }).click();
-    const register = page.locator('#app-registration');
-    await register.getByRole('textbox', { name: 'Username' }).fill(username);
-    await register.getByRole('textbox', { name: 'Password', exact: true }).fill(password);
-    await register.getByRole('textbox', { name: 'Confirm Password' }).fill(password);
-    await register.getByRole('button', { name: /submit/i }).click();
-
-    // the server creates the user, grants the starting collection through
-    // Firebase, then the client logs in and runs new-player onboarding
-    await expect(page.getByText(/welcome to duelyst/i)).toBeVisible({ timeout: 120_000 });
-
-    // --- skip the tutorial, clear the reward dialogs -----------------------
-    await page.locator('#button_skip').click();
-    await page.getByRole('button', { name: /^ok$/i }).click();
-
-    // achievements and daily-reward popups appear in sequence; click through
-    // whatever shows up until the main menu is reachable
-    // the menu renders uppercase via CSS; the accessible name is 'Play'
-    const mainMenuPlay = page.getByRole('button', { name: 'Play', exact: true });
-    await expect(async () => {
-      if (await mainMenuPlay.isVisible().catch(() => false)) return;
-      const gotIt = page.getByRole('button', { name: /got it/i });
-      if (await gotIt.isVisible().catch(() => false)) {
-        await gotIt.click();
-      } else {
-        await page.locator('body').click({ position: { x: 640, y: 400 } });
-      }
-      throw new Error('main menu not reached yet');
-    }).toPass({ timeout: 120_000, intervals: [2000] });
+    // --- register, skip the tutorial, clear the reward dialogs -------------
+    await register(page, username, password);
+    const mainMenuPlay = await skipTutorialToMainMenu(page);
 
     // --- start a practice game --------------------------------------------
     await mainMenuPlay.click();

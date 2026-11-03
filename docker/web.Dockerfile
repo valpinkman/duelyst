@@ -21,6 +21,8 @@ RUN npm install -g pnpm@10.12.1
 
 # manifests first, so a source-only change does not reinstall the world
 COPY package.json .npmrc pnpm-lock.yaml pnpm-workspace.yaml ./
+# package.json pnpm.patchedDependencies points here; --frozen-lockfile fails without it
+COPY patches ./patches
 COPY packages ./packages
 COPY packages/sdk/package.json ./packages/sdk/
 COPY packages/common/package.json ./packages/common/
@@ -74,6 +76,8 @@ WORKDIR /duelyst
 RUN npm install -g pnpm@10.12.1
 
 COPY package.json .npmrc pnpm-lock.yaml pnpm-workspace.yaml ./
+# package.json pnpm.patchedDependencies points here; --frozen-lockfile fails without it
+COPY patches ./patches
 COPY packages ./packages
 COPY packages/sdk/package.json ./packages/sdk/
 COPY packages/common/package.json ./packages/common/

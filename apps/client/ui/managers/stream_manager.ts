@@ -16,6 +16,7 @@ var EventBus = require('@duelyst/common/eventbus');
 var EVENTS = require('@duelyst/common/event_types');
 var Logger = require('@duelyst/common/logger');
 var DuelystFirebase = require('../extensions/duelyst_firebase');
+var { dbRef, off } = require('../../firebase');
 var DuelystBackbone = require('../extensions/duelyst_backbone');
 var Manager = require('./manager');
 
@@ -43,7 +44,7 @@ var StreamManager = Manager.extend({
     this.stopListening(EventBus.getInstance(), EVENTS.session_logged_out, this.disconnect);
 
     this.streamerWhitelistCollection = new DuelystFirebase.Collection(null, {
-      firebase: new Firebase(process.env.FIREBASE_URL).child('streamer-whitelist'),
+      firebase: dbRef('streamer-whitelist'),
     });
 
     this.streamerWhitelistCollection
@@ -53,7 +54,7 @@ var StreamManager = Manager.extend({
 
   onBeforeDisconnect: function () {
     Manager.prototype.onBeforeDisconnect.call(this);
-    this.streamerWhitelistCollection.firebase.off();
+    off(this.streamerWhitelistCollection.firebase);
     this.streamerWhitelistCollection.off();
   },
 
@@ -66,6 +67,11 @@ var StreamManager = Manager.extend({
   loadStreamStatusFromTwitch: function () {
     this.liveStreamCollection.reset();
     var loadPromises = this.streamerWhitelistCollection.map(function (model) {
+      // NOT converted to fetch (#8): this is JSONP, which injects a <script>
+      // tag rather than making an XHR, and fetch has no equivalent. The Twitch
+      // Kraken endpoint it talks to also has no CORS story, so a fetch here
+      // would fail outright rather than behave differently. Its `timeout` is
+      // the one $.ajax timeout in the client, and it stays with it.
       return Promise.resolve(
         $.ajax({
           url:

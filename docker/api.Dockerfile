@@ -7,6 +7,8 @@ COPY package.json /duelyst/
 COPY .npmrc /duelyst/
 COPY pnpm-lock.yaml /duelyst/
 COPY pnpm-workspace.yaml /duelyst/
+# package.json pnpm.patchedDependencies points here; --frozen-lockfile fails without it
+COPY patches /duelyst/patches
 COPY packages /duelyst/packages
 # workspace members live under packages/ - their manifests must exist at install time
 COPY packages/sdk/package.json /duelyst/packages/sdk/

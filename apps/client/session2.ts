@@ -6,7 +6,14 @@
  */
 const debug = require('debug')('session');
 const { EventEmitter } = require('events');
-const Firebase = require('./firebase');
+const {
+  child,
+  dbRef,
+  serverTimestamp,
+  signInWithToken,
+  signOutOfFirebase,
+  update,
+} = require('./firebase');
 const fetch = require('isomorphic-fetch');
 const moment = require('moment');
 const Storage = require('@duelyst/common/storage');
@@ -76,11 +83,9 @@ class Session extends EventEmitter {
    */
   _authFirebase(firebaseToken) {
     debug('authFirebase');
-    this.fbRef = new Firebase(this.fbUrl);
+    this.fbRef = dbRef(this.fbUrl);
     return Promise.resolve(
-      Firebase.auth()
-        .signInWithCustomToken(firebaseToken)
-        .then((credential) => credential.user.getIdTokenResult()),
+      signInWithToken(firebaseToken).then((credential) => credential.user.getIdTokenResult()),
     ).then((result) => ({
       auth: {
         id: result.claims.user_id || result.claims.sub,
@@ -94,13 +99,13 @@ class Session extends EventEmitter {
   _deauthFirebase() {
     debug('deauthFirebase');
     if (this.userId) {
-      this.fbRef.child('users').child(this.userId).child('presence').update({
+      update(child(this.fbRef, 'users/' + this.userId + '/presence'), {
         status: 'offline',
-        ended: Firebase.ServerValue.TIMESTAMP,
+        ended: serverTimestamp(),
       });
     }
     // v2's ref.unauth() became a sign-out on the auth instance
-    return Firebase.auth().signOut();
+    return signOutOfFirebase();
   }
 
   _decodeFirebaseToken(token) {

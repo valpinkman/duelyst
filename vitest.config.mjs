@@ -38,6 +38,17 @@ export default defineConfig({
       { test: { ...shared, name: 'sdk', include: ['test/unit/sdk/**/*.{js,ts}'] } },
       { test: { ...shared, name: 'misc', include: ['test/unit/misc/**/*.{js,ts}'] } },
       { test: { ...shared, name: 'firebase', include: ['test/unit/firebase/**/*.{js,ts}'] } },
+      // Lit components (docs/BACKBONE_REMOVAL_PLAN.md §11.3): a DOM, but no
+      // browser, no vendor globals and no managers -- components take their
+      // data as properties, so a test hands them plain Backbone objects.
+      {
+        test: {
+          ...shared,
+          name: 'client',
+          environment: 'happy-dom',
+          include: ['test/unit/client/**/*.{js,ts}'],
+        },
+      },
     ],
   },
 });

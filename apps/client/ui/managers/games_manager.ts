@@ -34,11 +34,22 @@ var ChatManager = require('./chat_manager');
 var InventoryManager = require('./inventory_manager');
 var NotificationsManager = require('./notifications_manager');
 var Manager = require('./manager');
+var { requestJson, requestJsonWithStatus } = require('@duelyst/common/request');
+var {
+  dbRef,
+  limitToLast,
+  onValue,
+  push,
+  query,
+  serverTimestamp,
+  setWithPriority,
+} = require('../../firebase');
 
 /** @namespace */
 var GamesManager = Manager.extend({
   // firebase
   _matchmakingErrorRef: null,
+  _stopMatchmakingErrorListener: null,
 
   // backbone models and collection
   rankingModel: null,
@@ -89,7 +100,7 @@ var GamesManager = Manager.extend({
 
         // init player games collection
         _self.playerGames = new DuelystFirebase.Collection(null, {
-          firebase: new Firebase(process.env.FIREBASE_URL + '/user-games/' + userId).limitToLast(1),
+          firebase: query(dbRef('user-games/' + userId), limitToLast(1)),
         });
 
         // init game invites collection
@@ -140,7 +151,8 @@ var GamesManager = Manager.extend({
     Manager.prototype.onBeforeDisconnect.call(this);
     this._stopWatchingForGame();
     if (this._matchmakingErrorRef) {
-      this._matchmakingErrorRef.off();
+      this._stopMatchmakingErrorListener();
+      this._stopMatchmakingErrorListener = null;
       this._matchmakingErrorRef = null;
     }
     this.stopListening(this.rankingModel);
@@ -162,27 +174,29 @@ var GamesManager = Manager.extend({
   /**
    * Requests a ladder ranking update (if needed) from the API server.
    * @private
-   * @return {Promise} $.ajax promise for the server call to update ranking.
+   * @return {Promise} fetch promise for the server call to update ranking.
    */
   _requestRankUpdateFromServer: function () {
     return new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        // withStatus: this call site reads the status off the response, see below
+        var request = requestJsonWithStatus({
           url: process.env.API_URL + '/api/me/rank',
           type: 'POST',
           contentType: 'application/json',
           dataType: 'json',
         });
 
-        request.done(
-          function (response) {
+        request.then(
+          function (result) {
+            var response = result.data;
             // schedule an update when the day rolls over
             // this is because rank could need an update after midnight UTC
             this._scheduleRankUpdateWhenUTCdayRollsOver();
 
             // If rank was cycled (status 200) and we have a rank history it needs to be refreshed
             // Also update which S-Rank season we are looking at
-            if (request.status == 200 && this.historyRankingModelCollection) {
+            if (result.status == 200 && this.historyRankingModelCollection) {
               var historyRequest = this.historyRankingModelCollection.fetch();
 
               historyRequest.done(
@@ -207,15 +221,14 @@ var GamesManager = Manager.extend({
               resolve(response);
             }
           }.bind(this),
+          function (response) {
+            // Temporary error, should parse server response.
+            var error = 'SEASON RANK request failed';
+            EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+
+            reject(new Error(error));
+          },
         );
-
-        request.fail(function (response) {
-          // Temporary error, should parse server response.
-          var error = 'SEASON RANK request failed';
-          EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-
-          reject(new Error(error));
-        });
       }.bind(this),
     );
   },
@@ -223,11 +236,11 @@ var GamesManager = Manager.extend({
   /**
    * Requests to enter matchmaking queue
    * @param {Object} matchRequest contains deck,factionId,gameType,etc
-   * @return {Promise} $.ajax promise for the server call to enter matchmaking queue
+   * @return {Promise} fetch promise for the server call to enter matchmaking queue
    * @return {Object} response from server contains an matchmaking token ID
    */
   requestEnterMatchmaking: function (matchRequest) {
-    var request = $.ajax({
+    var request = requestJson({
       data: JSON.stringify(matchRequest),
       url: process.env.API_URL + '/matchmaking',
       type: 'POST',
@@ -235,7 +248,7 @@ var GamesManager = Manager.extend({
       dataType: 'json',
     });
 
-    request.done(
+    request.then(
       function (response) {
         Logger.module('UI').log('GamesManager::requestEnterMatchmaking -> entered queue');
         var tokenId = response.tokenId;
@@ -250,15 +263,11 @@ var GamesManager = Manager.extend({
         }
 
         // start watching for errors using the intermediate game 'tokenId' returned from AJAX request
-        this._matchmakingErrorRef = new Firebase(
-          process.env.FIREBASE_URL +
-            '/user-matchmaking-errors/' +
-            ProfileManager.getInstance().get('id') +
-            '/' +
-            tokenId,
+        this._matchmakingErrorRef = dbRef(
+          'user-matchmaking-errors/' + ProfileManager.getInstance().get('id') + '/' + tokenId,
         );
-        this._matchmakingErrorRef.on(
-          'value',
+        this._stopMatchmakingErrorListener = onValue(
+          this._matchmakingErrorRef,
           function (snapshot) {
             if (snapshot.val()) {
               this._onMatchmakingError(snapshot.val());
@@ -269,14 +278,11 @@ var GamesManager = Manager.extend({
           },
         );
       }.bind(this),
-    );
-
-    request.fail(
-      function (jqXHR) {
+      function (error) {
         this._onMatchmakingError(
-          (jqXHR &&
-            jqXHR.responseJSON &&
-            (jqXHR.responseJSON.error || jqXHR.responseJSON.message)) ||
+          (error &&
+            error.responseJSON &&
+            (error.responseJSON.error || error.responseJSON.message)) ||
             'Failed to connect to matchmaker. Please retry.',
         );
       }.bind(this),
@@ -287,18 +293,17 @@ var GamesManager = Manager.extend({
 
   /**
    * Requests to leave matchmaking queue
-   * @return {Promise} $.ajax promise for the server call to leave matchmaking queue
+   * @return {Promise} fetch promise for the server call to leave matchmaking queue
    */
   requestLeaveMatchmaking: function () {
-    var request = $.ajax({
+    var request = requestJson({
       url: process.env.API_URL + '/matchmaking',
       type: 'DELETE',
       contentType: 'application/json',
       dataType: 'json',
     });
 
-    request.done(function (response) {}.bind(this));
-    request.fail(function (jqXHR) {}.bind(this));
+    request.then(function (response) {}.bind(this), function (error) {}.bind(this));
     return request;
   },
 
@@ -392,14 +397,14 @@ var GamesManager = Manager.extend({
     return new Promise(function (resolve, reject) {
       var season_key = moment(seasonModel.get('starting_at')).utc().format('YYYY-MM');
       // TODO: Mark rewards as claimed
-      var request = $.ajax({
+      var request = requestJson({
         url: process.env.API_URL + '/api/me/rank/history/' + season_key + '/claim_rewards',
         type: 'PUT',
         contentType: 'application/json',
         dataType: 'json',
       });
 
-      request.done(
+      request.then(
         function (response) {
           // Convert rewards to backbone models
           var rewardModels = [];
@@ -410,9 +415,6 @@ var GamesManager = Manager.extend({
           // resolve to rewards in response
           resolve(rewardModels);
         }.bind(this),
-      );
-
-      request.fail(
         function (response) {
           // Temporary error, should parse server response.
           var error = 'CLAIM RANK REWARDS request failed';
@@ -432,14 +434,14 @@ var GamesManager = Manager.extend({
   spectateBuddyGame: function (buddyId) {
     return new Promise(
       function (resolve, reject) {
-        var request = $.ajax({
+        var request = requestJson({
           url: process.env.API_URL + '/api/me/spectate/' + buddyId,
           type: 'GET',
           contentType: 'application/json',
           dataType: 'json',
         });
 
-        request.done(
+        request.then(
           function (response) {
             this.trigger(EVENTS.start_spectate, {
               gameData: response.gameData,
@@ -448,16 +450,15 @@ var GamesManager = Manager.extend({
             });
             resolve(response);
           }.bind(this),
+          function (response) {
+            // Temporary error, should parse server response.
+            var error =
+              (response && response.responseJSON && response.responseJSON.message) ||
+              'SPECTATE request failed';
+            EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+            reject(new Error(error));
+          },
         );
-
-        request.fail(function (response) {
-          // Temporary error, should parse server response.
-          var error =
-            (response && response.responseJSON && response.responseJSON.message) ||
-            'SPECTATE request failed';
-          EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-          reject(new Error(error));
-        });
       }.bind(this),
     );
   },
@@ -486,14 +487,9 @@ var GamesManager = Manager.extend({
       this.cancelInvite();
 
       // create a firebase reference for the invite keyed for the user we're sending the invite to
-      var inviteRef = new Firebase(
-        process.env.FIREBASE_URL +
-          '/matchmaking/' +
-          process.env.NODE_ENV +
-          '/invites/to/' +
-          playerId +
-          '/',
-      ).push();
+      var inviteRef = push(
+        dbRef('matchmaking/' + process.env.NODE_ENV + '/invites/to/' + playerId + '/'),
+      );
 
       // initialize the invite attributes
       var inviteData: Record<string, any> = {};
@@ -505,7 +501,7 @@ var GamesManager = Manager.extend({
       inviteData.createdAt = Date.now();
 
       // update invite queue
-      inviteRef.setWithPriority(inviteData, Firebase.ServerValue.TIMESTAMP);
+      setWithPriority(inviteRef, inviteData, serverTimestamp());
 
       // creat an invite model
       this.lastSentInviteModel = new DuelystFirebase.Model(inviteData, { firebase: inviteRef });
@@ -707,7 +703,8 @@ var GamesManager = Manager.extend({
       _.defer(
         function () {
           this._rejectInvite(inviteModel);
-          this.receivedInvitesCollection.remove(inviteModel);
+          // the collection drops it through its own child_removed listener
+          DuelystFirebase.removeChild(this.receivedInvitesCollection, inviteModel);
         }.bind(this),
       );
       return;
@@ -862,7 +859,8 @@ var GamesManager = Manager.extend({
     this._stopWatchingForGame();
 
     if (this._matchmakingErrorRef) {
-      this._matchmakingErrorRef.off();
+      this._stopMatchmakingErrorListener();
+      this._stopMatchmakingErrorListener = null;
       this._matchmakingErrorRef = null;
     }
 

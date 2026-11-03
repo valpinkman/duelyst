@@ -18,8 +18,9 @@ var EVENTS = require('@duelyst/common/event_types');
 var Logger = require('@duelyst/common/logger');
 var SDK = require('@duelyst/sdk');
 var NotificationModel = require('../models/notification');
-var DuelystFirebase = require('../extensions/duelyst_firebase');
-var DuelystBackbone = require('../extensions/duelyst_backbone');
+var DuelystFirebase: DuelystFirebaseStatic = require('../extensions/duelyst_firebase');
+var { dbRef } = require('../../firebase');
+var DuelystBackbone: DuelystBackboneStatic = require('../extensions/duelyst_backbone');
 var Analytics = require('@duelyst/common/analytics');
 var AnalyticsTracker = require('../../analyticsTracker');
 var ErrorDialogItemView = require('../views/item/error_dialog');
@@ -31,6 +32,7 @@ var NavigationManager = require('./navigation_manager');
 var NotificationsManager = require('./notifications_manager');
 var ProfileManager = require('./profile_manager');
 var Manager = require('./manager');
+var { requestJson, requestJsonWithStatus } = require('@duelyst/common/request');
 
 var QuestsManager = Manager.extend({
   dailyQuestsCollection: null,
@@ -63,11 +65,8 @@ var QuestsManager = Manager.extend({
               // on first connect/session start request new daily quests
               this.requestNewDailyQuests().finally(
                 function () {
-                  var dailyquestsFirebaseReference = new Firebase(
-                    process.env.FIREBASE_URL +
-                      'user-quests/' +
-                      userId +
-                      '/daily/current/generated_at',
+                  var dailyquestsFirebaseReference = dbRef(
+                    'user-quests/' + userId + '/daily/current/generated_at',
                   );
                   this.dailyQuestsGeneratedAtModel = new DuelystFirebase.Model(null, {
                     firebase: dailyquestsFirebaseReference,
@@ -78,16 +77,17 @@ var QuestsManager = Manager.extend({
                   //  firebase: dailyChallengesLastCompletedAtModelFirebaseReference
                   // })
 
-                  this.dailyChallengesLastCompletedAtModel = new DuelystBackbone.Model();
+                  this.dailyChallengesLastCompletedAtModel =
+                    new DuelystBackbone.Model<DailyChallengeCompletedAtAttributes>();
                   this.dailyChallengesLastCompletedAtModel.url =
                     process.env.API_URL + '/api/me/challenges/daily/completed_at';
                   this.dailyChallengesLastCompletedAtModel.fetch();
 
                   var dailyQuestsPath =
                     process.env.FIREBASE_URL + 'user-quests/' + userId + '/daily/current/quests';
-                  var dailyquestsFirebaseReference = new Firebase(dailyQuestsPath);
+                  var dailyquestsFirebaseReference = dbRef(dailyQuestsPath);
 
-                  this.dailyQuestsCollection = new DuelystFirebase.Collection(null, {
+                  this.dailyQuestsCollection = new DuelystFirebase.Collection<QuestModel>(null, {
                     firebase: dailyquestsFirebaseReference,
                   });
 
@@ -121,15 +121,14 @@ var QuestsManager = Manager.extend({
   /* endregion CONNECT */
 
   // returns daily quests and catch up quests in one collection
-  getQuestCollection: function () {
+  getQuestCollection: function (): DuelystFirebaseCollection<QuestModel> {
     return this.dailyQuestsCollection;
   },
 
   getDailyChallengesLastCompletedAtMoment: function () {
-    if (this.dailyChallengesLastCompletedAtModel) {
-      var lastCompletedAt = this.dailyChallengesLastCompletedAtModel.get(
-        'daily_challenge_last_completed_at',
-      );
+    var completedAtModel: DailyChallengeCompletedAtModel = this.dailyChallengesLastCompletedAtModel;
+    if (completedAtModel) {
+      var lastCompletedAt = completedAtModel.get('daily_challenge_last_completed_at');
       return moment.utc(lastCompletedAt || '2016-01-01');
     } else {
       return moment.utc('2016-01-01');
@@ -177,7 +176,7 @@ var QuestsManager = Manager.extend({
     this.trigger('daily_quests_change');
   },
 
-  onQuestsProgressed: function (questModel) {
+  onQuestsProgressed: function (questModel: QuestModel) {
     Logger.module('UI').log('QuestsManager.onQuestsProgressed', questModel);
     if (questModel.get('progress') > 0) {
       // generate quest
@@ -312,9 +311,7 @@ var QuestsManager = Manager.extend({
 
   fetchDailyChallengeModel: function () {
     var dailyChallengeModel = new DuelystFirebase.Model(null, {
-      firebase: new Firebase(
-        process.env.FIREBASE_URL + 'daily-challenges/' + moment.utc().format('YYYY-MM-DD'),
-      ),
+      firebase: dbRef('daily-challenges/' + moment.utc().format('YYYY-MM-DD')),
     });
 
     return dailyChallengeModel.onSyncOrReady();
@@ -372,26 +369,26 @@ var QuestsManager = Manager.extend({
     //   var url = process.env.API_URL + '/api/me/quests/beginner'
     // }
 
-    var request = $.ajax({
+    var request = requestJson({
       url: url,
       type: 'POST',
       contentType: 'application/json',
       dataType: 'json',
     });
 
-    request.done(
+    request.then(
       function (response) {
         this._scheduleQuestsUpdateWhenUTCdayRollsOver();
       }.bind(this),
+      function (response) {
+        // Temporary error, should parse server response.
+        var error = 'Daily quest generation failed';
+        EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+      },
     );
 
-    request.fail(function (response) {
-      // Temporary error, should parse server response.
-      var error = 'Daily quest generation failed';
-      EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-    });
-
-    // wrap jquery request in bluebird promise
+    // requestJson already returns a native promise; the wrapper stays so callers
+    // keep getting the same promise flavour they always did
     return Promise.resolve(request);
   },
 
@@ -417,42 +414,49 @@ var QuestsManager = Manager.extend({
 
   requestQuestReplace: function (index) {
     // for analytics we want to track what kinds of quests are getting replaced
-    var replacedQuestId = this.dailyQuestsCollection.get(index).get('quest_type_id');
+    var questCollection: DuelystFirebaseCollection<QuestModel> = this.dailyQuestsCollection;
+    var replacedQuestId = questCollection.get(index).get('quest_type_id');
 
-    var request = $.ajax({
+    // withStatus: this call site reads the status off the response, see below
+    var request = requestJsonWithStatus({
       url: process.env.API_URL + '/api/me/quests/daily/' + index,
       type: 'PUT',
       contentType: 'application/json',
       dataType: 'json',
     });
 
-    request.done(function (response, textStatus, jqXHR) {
-      if (response) {
-        // track an event in analytics
-        Analytics.track(
-          'quest replaced',
-          {
-            category: Analytics.EventCategory.Quest,
-            quest_type_id: replacedQuestId,
-          },
-          {
-            labelKey: 'quest_type_id',
-          },
-        );
-      } else if (jqXHR.status == 304) {
-        NavigationManager.getInstance().showDialogView(
-          new ErrorDialogItemView({ title: 'Daily quest has already been mulliganed once today.' }),
-        );
-      }
-    });
-
-    request.fail(function (response) {
-      // Temporary error, should parse server response.
-      var error = 'Daily quest mulligan/replacement failed';
-      EventBus.getInstance().trigger(EVENTS.ajax_error, error);
-    });
-
-    return request;
+    // returns the parsed body, as the jqXHR handed callers before, and never
+    // rejects -- the failure is reported on the event bus, same as it was
+    return request.then(
+      function (result) {
+        var response = result.data;
+        if (response) {
+          // track an event in analytics
+          Analytics.track(
+            'quest replaced',
+            {
+              category: Analytics.EventCategory.Quest,
+              quest_type_id: replacedQuestId,
+            },
+            {
+              labelKey: 'quest_type_id',
+            },
+          );
+        } else if (result.status == 304) {
+          NavigationManager.getInstance().showDialogView(
+            new ErrorDialogItemView({
+              title: 'Daily quest has already been mulliganed once today.',
+            }),
+          );
+        }
+        return response;
+      },
+      function (response) {
+        // Temporary error, should parse server response.
+        var error = 'Daily quest mulligan/replacement failed';
+        EventBus.getInstance().trigger(EVENTS.ajax_error, error);
+      },
+    );
   },
 
   /* endregion QUEST CYCLING */

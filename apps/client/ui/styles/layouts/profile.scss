@@ -836,3 +836,9 @@
 		}
 	}
 }
+
+// the component's own box sits between #app-profile and .modal-dialog, which
+// .duelyst-modal lays out
+duelyst-profile {
+	display: contents;
+}

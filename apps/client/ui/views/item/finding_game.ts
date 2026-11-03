@@ -16,6 +16,9 @@ var moment = require('moment');
 var momentDurationFormat = require('moment-duration-format');
 var i18next = require('i18next');
 
+// velocity's default easing was jQuery's "swing", i.e. ease-in-out-sine
+var EASE_SWING = 'cubic-bezier(0.445, 0.05, 0.55, 0.95)';
+
 var FindingGameItemView = Backbone.Marionette.ItemView.extend({
   id: 'app-finding-game',
   className: 'status game-vs',
@@ -151,19 +154,25 @@ var FindingGameItemView = Backbone.Marionette.ItemView.extend({
     // cleanup
     this._stopShowingGameTips();
 
-    // fade out
-    this.ui.$game_tip
-      .velocity('stop')
-      .velocity(
-        { opacity: 0 },
-        {
-          duration: CONFIG.FADE_FAST_DURATION * 1000.0,
-          complete: function () {
-            this.ui.$game_tip.text(GAME_TIPS.random_tip());
-          }.bind(this),
-        },
-      )
-      .velocity({ opacity: 1 }, { duration: CONFIG.FADE_FAST_DURATION * 1000.0 });
+    // fade out, swap the tip, then fade back in; velocity queued the two
+    // animations on the element, so chain them explicitly
+    var gameTipEl = this.ui.$game_tip instanceof $ ? this.ui.$game_tip[0] : null;
+    if (gameTipEl != null) {
+      var fadeDuration = CONFIG.FADE_FAST_DURATION * 1000.0;
+      this._game_tip_animation = gameTipEl.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: fadeDuration,
+        easing: EASE_SWING,
+        fill: 'forwards',
+      });
+      this._game_tip_animation.onfinish = function () {
+        this.ui.$game_tip.text(GAME_TIPS.random_tip());
+        this._game_tip_animation = gameTipEl.animate([{ opacity: 0 }, { opacity: 1 }], {
+          duration: fadeDuration,
+          easing: EASE_SWING,
+          fill: 'forwards',
+        });
+      }.bind(this);
+    }
 
     // delay and show next
     this._game_tip_timeout_id = setTimeout(
@@ -173,7 +182,10 @@ var FindingGameItemView = Backbone.Marionette.ItemView.extend({
   },
 
   _stopShowingGameTips: function () {
-    this.ui.$game_tip.velocity('stop');
+    if (this._game_tip_animation != null) {
+      this._game_tip_animation.cancel();
+      this._game_tip_animation = null;
+    }
     if (this._game_tip_timeout_id != null) {
       clearTimeout(this._game_tip_timeout_id);
       this._game_tip_timeout_id = null;

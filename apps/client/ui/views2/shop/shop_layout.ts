@@ -23,7 +23,6 @@ var CosmeticsType = require('@duelyst/sdk/cosmetics/cosmeticsTypeLookup');
 var ShopData = require('@duelyst/data/shop.json');
 
 var RedeemGiftCodeModalView = require('../../views/item/redeem_gift_code_modal');
-var PremiumPurchaseDialog = require('./premium_purchase_dialog');
 
 var Session = require('../../../session2');
 
@@ -304,13 +303,7 @@ var ShopLayout = Backbone.Marionette.LayoutView.extend({
     NavigationManager.getInstance().showModalView(new RedeemGiftCodeModalView());
   },
 
-  onPremiumCurrencyPressed: _.throttle(
-    function (e) {
-      // NavigationManager.getInstance().showModalView(new PremiumPurchaseDialog());
-    },
-    1500,
-    { trailing: false },
-  ),
+  onPremiumCurrencyPressed: _.throttle(function (e) {}, 1500, { trailing: false }),
 });
 
 module.exports = ShopLayout;

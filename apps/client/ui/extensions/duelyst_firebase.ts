@@ -1,180 +1,177 @@
 var _ = require('underscore');
 const PromiseUtils = require('@duelyst/common/utils/utils_promise');
 
+var FirebaseSync = require('./firebase_sync');
+
 /*
- * backfire (app/vendor/backfire) is a Backbone<->Firebase binding written for
- * firebase 2.x and shipped only as a minified build. Rather than edit that
- * blob, the one place it is incompatible with a modern SDK is corrected here.
- *
- * backfire derives a child's id with:
- *     typeof snap.key === 'function' ? snap.key() : snap.name()
- * In firebase 2.x `key` was a METHOD; from v3 on it is a plain string
- * property, so that test falls through to `name()`, which no longer exists -
- * every synced model would come back with `id === undefined`.
- *
- * See app/firebase.ts for why the rest of backfire works untouched.
+ * The client's synced Model and Collection. The binding itself -- reads,
+ * writes, the `_`-namespace -- is ./firebase_sync.ts; this layer adds the part
+ * every Manager waits on: `isSynced`, `onSyncOrReady()`, and turning a
+ * refused read into a `sync_error` and a rejection rather than a hang
+ * (docs/BACKBONE_AUDIT.md §7.3, §7.5 items 26-27).
  */
-if (Backbone.Firebase && Backbone.Firebase.prototype) {
-  Backbone.Firebase.prototype._getKey = function (snapshotOrRef) {
-    return typeof snapshotOrRef.key === 'function' ? snapshotOrRef.key() : snapshotOrRef.key;
-  };
+var toRef = FirebaseSync.toRef;
+
+function describeRef(instance) {
+  try {
+    return String(toRef(instance.firebase));
+  } catch (e) {
+    return '(unknown ref)';
+  }
 }
 
 /*
- * firebase 2.x exposed `.ref()` as a METHOD on snapshots and refs; from v3 on
- * `.ref` is a plain property. Both shapes are accepted here so this file does
- * not care which SDK is underneath.
+ * The first cancel is the one that matters: a refused Collection read cancels
+ * all four of its listeners at once.
  */
-function toRef(target) {
-  if (target == null) return target;
-  return typeof target.ref === 'function' ? target.ref() : target.ref || target;
+function onFirebaseCancel(error) {
+  if (this.syncError != null) return;
+  this.syncError =
+    error != null ? error : new Error('Firebase read cancelled: ' + describeRef(this));
+  console.error('Firebase read cancelled for ' + describeRef(this) + ':', this.syncError);
+  this.trigger('sync_error', this, this.syncError);
 }
 
 /*
- * ...and backfire calls the SDK's `.ref()` too, in nine methods: create, update,
- * add, remove, destroy, _parseModels, _removeModel and both _updateModel
- * implementations. `this.firebase` is whatever ref it was handed (its
- * `_determineRef` does `case "object": break`), and `this._fbref` comes from the
- * same place, so those are SDK refs, not backfire's own `Backbone.Firebase#ref`.
- *
- * app/firebase.ts gives every ref built by `new Firebase(url)` a callable `ref`,
- * which is why most of this works. It is not enough: a DERIVED ref does not
- * inherit the patch, and half the call sites hand backfire one --
- * `new Firebase(url).push()` (game invites), `.child(...)`, `.limitToLast(1)`,
- * `.orderByChild(...).startAt(...)`. Sending a friend a game invite then failed
- * in `destroy()` with "this.firebase.ref is not a function", leaving the invite
- * live in Firebase so both players sat on "waiting".
- *
- * Every ref entering backfire is patched here instead, which is the one place
- * they all pass through: nothing outside this file constructs a
- * Backbone.Firebase model directly.
- *
- * Returns the ref the getter yields rather than the target itself, because they
- * are not the same object: for a QUERY, `.ref` is the underlying Reference and
- * has `child()`, while the query does not -- and backfire calls
- * `.ref().child(...)`.
+ * Resolves on the first sync. Rejects if the read is cancelled, or if the
+ * first sync has not arrived within DuelystFirebase.SYNC_TIMEOUT_MS -- the
+ * cases that used to leave the client on the loading screen forever. The
+ * timeout is per call and does not poison the instance: a later call still
+ * resolves if the data does arrive.
  */
-function ensureCallableRef(target) {
-  if (target == null || typeof target !== 'object') return target;
-  if (typeof target.ref === 'function') return target;
-  var underlying = target.ref || target; // read the getter BEFORE shadowing it
-  Object.defineProperty(target, 'ref', {
-    value: function () {
-      return underlying;
-    },
-    configurable: true,
-    writable: true,
+function onSyncOrReady(callback) {
+  var self = this;
+  var p = new Promise(function (resolve, reject) {
+    if (self.isSynced) return resolve(self);
+    if (self.syncError != null) return reject(self.syncError);
+    var timer;
+    var settle = function () {
+      clearTimeout(timer);
+      self.stopListening(self, 'ready', onReady);
+      self.stopListening(self, 'sync_error', onError);
+    };
+    var onReady = function () {
+      settle();
+      resolve(self);
+    };
+    var onError = function (target, error) {
+      settle();
+      reject(error);
+    };
+    self.listenTo(self, 'ready', onReady);
+    self.listenTo(self, 'sync_error', onError);
+    var timeoutMs = Backbone.DuelystFirebase.SYNC_TIMEOUT_MS;
+    timer = setTimeout(function () {
+      settle();
+      reject(
+        new Error(
+          'Timed out after ' + timeoutMs + 'ms waiting for Firebase to sync ' + describeRef(self),
+        ),
+      );
+    }, timeoutMs);
   });
-  return target;
+  PromiseUtils.nodeify(p, callback);
+  return p;
 }
 
 /*
- * Patched before backfire runs (so the ref is already callable while it syncs)
- * and again after (so a ref backfire resolved itself -- from a string, or from a
- * `firebase` function on the class -- is covered too).
+ * As in duelyst_backbone.ts: `Backbone` is a vendor global typed `any`, so the
+ * published shape is stated once, here, and consumers annotate their require
+ * with `DuelystFirebaseStatic` to get typed attributes. See
+ * apps/client/types/backbone_models.d.ts.
  */
-function patchRefs(instance, options) {
-  if (options != null) ensureCallableRef(options.firebase);
-  ensureCallableRef(instance.firebase);
+Backbone.DuelystFirebase = {
+  // generous: this only has to beat "forever", not a slow connection
+  SYNC_TIMEOUT_MS: 30000,
+};
+
+/*
+ * `sync` is hooked BEFORE the binding subscribes: when the first value is
+ * already in the SDK's cache it is delivered synchronously inside on(), and a
+ * hook registered afterwards would miss it and never become ready.
+ */
+function trackSync(instance) {
+  instance.isSynced = false;
+  instance.syncError = null;
+  instance.listenToOnce(instance, 'sync', function () {
+    instance.isSynced = true;
+    instance.trigger('ready');
+  });
 }
 
-Backbone.DuelystFirebase = {};
-
-Backbone.DuelystFirebase.Model = Backbone.Firebase.Model.extend({
+Backbone.DuelystFirebase.Model = FirebaseSync.Model.extend({
   constructor: function (model, options) {
-    this.isSynced = false;
-    this.listenToOnce(this, 'sync', function () {
-      this.isSynced = true;
-      this.trigger('ready');
-    });
-    patchRefs(this, options);
-    Backbone.Firebase.Model.apply(this, arguments);
-    patchRefs(this, options);
+    trackSync(this);
+    FirebaseSync.Model.call(this, model, options);
   },
 
-  onSyncOrReady: function (callback) {
-    var p = new Promise(
-      function (resolve, reject) {
-        if (this.isSynced) {
-          resolve(this);
-        } else {
-          this.listenToOnce(this, 'ready', function () {
-            resolve(this);
-          });
-        }
-      }.bind(this),
-    );
-    PromiseUtils.nodeify(p, callback);
-    return p;
-  },
+  onSyncOrReady: onSyncOrReady,
 
-  _updateModel: function (model) {
-    // Find the deleted keys and set their values to null
-    // so Firebase properly deletes them.
-    var modelObj = model.changedAttributes();
-    _.each(model.changed, function (value, key) {
-      if (key.indexOf('_') == 0) {
-        // ignore all attributes starting with an underscore
-        delete modelObj[key];
-      } else if (typeof value === 'undefined' || value === null) {
-        if (key == 'id') {
-          delete modelObj[key];
-        } else {
-          modelObj[key] = null;
-        }
-      }
-    });
-    if (_.size(modelObj)) {
-      toRef(this.firebase).update(modelObj, this._log);
-    }
-  },
-
-  _modelChanged: function (snap) {
-    // Unset attributes that have been deleted from the server
-    // by comparing the keys that have been removed.
-    var newModel = snap.val();
-    if (typeof newModel === 'object' && newModel !== null) {
-      var diff = _.difference(_.keys(this.attributes), _.keys(newModel));
-      var self = this;
-      _.each(diff, function (key) {
-        if (key.indexOf('_') != 0) self.unset(key);
-      });
-    }
-    this._listenLocalChange(false);
-    this.set(newModel);
-    this._listenLocalChange(true);
-    this.trigger('sync', this, null, null);
-  },
+  _onFirebaseCancel: onFirebaseCancel,
 });
 
-Backbone.DuelystFirebase.Collection = Backbone.Firebase.Collection.extend({
+Backbone.DuelystFirebase.Collection = FirebaseSync.Collection.extend({
   constructor: function (models, options) {
-    this.isSynced = false;
-    this.listenToOnce(this, 'sync', function () {
-      this.isSynced = true;
-      this.trigger('ready');
-    });
-    patchRefs(this, options);
-    Backbone.Firebase.Collection.apply(this, arguments);
-    patchRefs(this, options);
+    trackSync(this);
+    FirebaseSync.Collection.call(this, models, options);
   },
 
-  onSyncOrReady: function (callback) {
-    var p = new Promise(
-      function (resolve, reject) {
-        if (this.isSynced) {
-          resolve(this);
-        } else {
-          this.listenToOnce(this, 'ready', function () {
-            resolve(this);
-          });
-        }
-      }.bind(this),
-    );
-    PromiseUtils.nodeify(p, callback);
-    return p;
-  },
+  onSyncOrReady: onSyncOrReady,
+
+  _onFirebaseCancel: onFirebaseCancel,
 });
+
+/*
+ * The app's child creations and removals in a synced collection's node:
+ * creating a chat message, marking news read, and removing a received game
+ * invite (docs/BACKBONE_AUDIT.md §7.2 class C, §7.7 step 2). A synced
+ * collection's own add/create/remove are local since backfire went; changes
+ * to an existing member still write through (firebase_sync.ts).
+ *
+ * What lands in Firebase is what backfire wrote, at the same child. The
+ * collection is not touched: it updates through its own child_* listeners,
+ * which the SDK raises locally before the server answers, exactly as it did
+ * when backfire issued the write. A `.priority` key in a payload is honoured
+ * by the SDK's set().
+ *
+ * A member is addressed by the key it was read from (`_firebaseKey`), not by
+ * its id -- they differ for a child storing its own `id` (§7.5 item 17) --
+ * so a member or a key may be passed. A failed write is reported (item 28).
+ *
+ * `collection.firebase` may be a query (`limitToLast`, `startAt`); writes go
+ * to the reference underneath it.
+ */
+function collectionRef(collection) {
+  return toRef(collection.firebase);
+}
+
+function childKey(memberOrKey) {
+  if (memberOrKey != null && typeof memberOrKey === 'object') {
+    return memberOrKey._firebaseKey != null ? memberOrKey._firebaseKey : memberOrKey.id;
+  }
+  return memberOrKey;
+}
+
+function addChild(collection, key, attributes) {
+  FirebaseSync.write(
+    FirebaseSync.sdk.child(collectionRef(collection), key),
+    'set',
+    _.extend({}, attributes, { id: key }),
+  );
+  return key;
+}
+
+/* mints a push key for the new child, as backfire's create() did */
+function pushChild(collection, attributes) {
+  return addChild(collection, FirebaseSync.sdk.push(collectionRef(collection)).key, attributes);
+}
+
+function removeChild(collection, memberOrKey) {
+  FirebaseSync.write(
+    FirebaseSync.sdk.child(collectionRef(collection), childKey(memberOrKey)),
+    'remove',
+  );
+}
 
 /*
  * Hung off the exported object rather than assigned to `exports`: the
@@ -182,7 +179,11 @@ Backbone.DuelystFirebase.Collection = Backbone.Firebase.Collection.extend({
  * `exports.toRef = ...` earlier in the file never reached a caller.
  */
 Backbone.DuelystFirebase.toRef = toRef;
-Backbone.DuelystFirebase.ensureCallableRef = ensureCallableRef;
+Backbone.DuelystFirebase.childKey = childKey;
+Backbone.DuelystFirebase.addChild = addChild;
+Backbone.DuelystFirebase.pushChild = pushChild;
+Backbone.DuelystFirebase.removeChild = removeChild;
 
 // Expose the class either via CommonJS or the global object
-module.exports = Backbone.DuelystFirebase;
+const DuelystFirebase: DuelystFirebaseStatic = Backbone.DuelystFirebase;
+module.exports = DuelystFirebase;

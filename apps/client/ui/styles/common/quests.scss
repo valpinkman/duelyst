@@ -1,4 +1,11 @@
 // alternate animation here: http://jsfiddle.net/q8j69xo3/3/
+
+// The Lit component sits between the shell (#quest-log, a flex container that
+// centres its child, see .duelyst-modal) and .modal-dialog. Take it out of the
+// box tree so .modal-dialog is still the child that gets centred.
+duelyst-quest-log {
+	display: contents;
+}
 #quest-log {
 	.btn-cancel-primary {
 		right: -6rem;

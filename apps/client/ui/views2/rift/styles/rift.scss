@@ -1,4 +1,10 @@
 /* ---------- DECK SELECT ---------- */
+// components/rift/rift-runs.ts: the element only adds a box between the
+// shell's content area and the carousel, which carries .rift-runs itself
+duelyst-rift-runs {
+	display: contents;
+}
+
 .rift-runs {
 	background: none;
 	@extend .panel;

@@ -30,6 +30,7 @@ var NavigationManager = require('./navigation_manager');
 var ChatManager = require('./chat_manager');
 var Manager = require('./manager');
 var ProfileManager = require('./profile_manager');
+var { dbRef, orderByChild, query, startAt } = require('../../firebase');
 
 var NotificationsManager = Manager.extend({
   _notificationQueue: null,
@@ -65,12 +66,14 @@ var NotificationsManager = Manager.extend({
       .onReady()
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
-        var notificationsRef = new Firebase(
-          process.env.FIREBASE_URL + '/user-notifications/' + userId,
-        );
+        var notificationsRef = dbRef('user-notifications/' + userId);
 
         _self.remoteNotifications = new DuelystFirebase.Collection(null, {
-          firebase: notificationsRef.orderByChild('created_at').startAt(moment().utc().valueOf()),
+          firebase: query(
+            notificationsRef,
+            orderByChild('created_at'),
+            startAt(moment().utc().valueOf()),
+          ),
         });
         _self.listenTo(_self.remoteNotifications, 'add', _self.onRemoteNotificationAdded);
 

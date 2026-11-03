@@ -2,6 +2,12 @@
 
   background:transparent;
 
+	// shells/buddies_shell.ts: the component's own box sits between
+	// #app-buddies and .modal-dialog, which .duelyst-modal lays out
+	duelyst-buddies {
+		display: contents;
+	}
+
 	.btn-cancel-primary {
 		top: 0;
 		right: -7.9rem;
@@ -181,6 +187,16 @@
     max-height: 100%;
     background: rgba(0,0,0,0.75);
     border-left: 0.1rem solid rgba(255,255,255,0.1);
+	// shells/buddy_selection_shell.ts: the shell only adds a box between the
+	// region and <duelyst-buddy-selection>, which carries .buddy-selection itself
+	.buddy-selection-shell {
+		display: contents;
+	}
+	// <duelyst-buddies> renders the region; the shell's Marionette region is
+	// this box inside it, which adds nothing to the layout either
+	.buddy-selection-host {
+		display: contents;
+	}
 	.buddy-selection-empty {
 		height: 100%;
 		display:flex;
