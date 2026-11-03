@@ -1,0 +1,62 @@
+{
+  "threshold": 0.1,
+  "maxDiff": 0.5,
+  "maxDiffDom": 0.05,
+  "rows": [
+    {
+      "name": "04-ProfileShell.dom",
+      "percent": 0,
+      "changed": 0,
+      "sizeChanged": false,
+      "noise": 0,
+      "limit": 0.05,
+      "fail": false
+    },
+    {
+      "name": "04-ProfileShell",
+      "percent": 0,
+      "changed": 0,
+      "sizeChanged": false,
+      "noise": 0,
+      "limit": 0.5,
+      "fail": false
+    },
+    {
+      "name": "08-BuddiesShell.dom",
+      "percent": 0,
+      "changed": 0,
+      "sizeChanged": false,
+      "noise": 0,
+      "limit": 0.05,
+      "fail": false
+    },
+    {
+      "name": "08-BuddiesShell",
+      "percent": 0,
+      "changed": 0,
+      "sizeChanged": false,
+      "noise": 0,
+      "limit": 0.5,
+      "fail": false
+    },
+    {
+      "name": "09-BuddySelectionShell.dom",
+      "percent": 0,
+      "changed": 0,
+      "sizeChanged": false,
+      "noise": 0,
+      "limit": 0.05,
+      "fail": false
+    },
+    {
+      "name": "09-BuddySelectionShell",
+      "percent": 0.1394314236111111,
+      "changed": 1285,
+      "sizeChanged": false,
+      "noise": 0,
+      "limit": 0.5,
+      "fail": false
+    }
+  ],
+  "failures": 0
+}

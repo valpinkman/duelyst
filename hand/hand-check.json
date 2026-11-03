@@ -1,0 +1,204 @@
+{
+  "users": {
+    "a": "handamw0yggyi",
+    "b": "handbmw0ygy5j",
+    "c": "handcmw0yhhyu"
+  },
+  "results": [
+    {
+      "item": "callout shows before any pick",
+      "ok": true,
+      "details": {
+        "text": "Earn Rewards for Inviting your Friends\n\nYour friends start with bonus gold and you earn rewards as they battle.\n\nREFERRA"
+      }
+    },
+    {
+      "item": "Invite friends opens referral dialog",
+      "ok": true,
+      "details": {
+        "text": "Your referral CODE is  ← click to copy.\n\nYour friends have to use your code before playing a ranked game. learn more\n\n0\nREFERRALS\nEvery friend that uses your CO"
+      }
+    },
+    {
+      "item": "B row: name, status, rank, portrait",
+      "ok": true,
+      "details": {
+        "cls": "buddy buddy-preview online bronze",
+        "name": "handbmw0ygy5j",
+        "status": "online",
+        "rank": "30",
+        "portrait": "resources/profile_icons/tree.jpg",
+        "portraitLoaded": true
+      }
+    },
+    {
+      "item": "rank unset renders \"?\"",
+      "ok": true,
+      "details": {
+        "savedRank": 30,
+        "rank": "?",
+        "cls": "buddy buddy-preview online"
+      }
+    },
+    {
+      "item": "unread: B row gets .unread when not selected",
+      "ok": true,
+      "details": {
+        "cls": "buddy buddy-preview online bronze unread"
+      }
+    },
+    {
+      "item": "click selects B (.active) and shows buddy panel",
+      "ok": true,
+      "details": {
+        "activeRows": [
+          "handbmw0ygy5j"
+        ],
+        "unreadRows": 0,
+        "panelName": "handbmw0ygy5j",
+        "calloutGone": true,
+        "controlsOpacity": [
+          "0.5",
+          "0.5"
+        ]
+      }
+    },
+    {
+      "item": "add-buddy controls dimmed after select",
+      "ok": true,
+      "details": [
+        "0.5",
+        "0.5"
+      ]
+    },
+    {
+      "item": "selecting B clears .unread",
+      "ok": true,
+      "details": {
+        "activeRows": [
+          "handbmw0ygy5j"
+        ],
+        "unreadRows": 0,
+        "panelName": "handbmw0ygy5j",
+        "calloutGone": true,
+        "controlsOpacity": [
+          "0.5",
+          "0.5"
+        ]
+      }
+    },
+    {
+      "item": "search: partial lowercased name filters to B",
+      "ok": true,
+      "details": {
+        "query": "ndbmw0",
+        "rows": [
+          "handbmw0ygy5j"
+        ]
+      }
+    },
+    {
+      "item": "search: non-matching query empties list",
+      "ok": true,
+      "details": {
+        "rows": []
+      }
+    },
+    {
+      "item": "search: clearing brings B back",
+      "ok": true,
+      "details": {
+        "rows": [
+          "handbmw0ygy5j"
+        ]
+      }
+    },
+    {
+      "item": "DND toggles .active and profile doNotDisturb",
+      "ok": true,
+      "details": {
+        "d0": {
+          "cls": false,
+          "profile": false
+        },
+        "d1": {
+          "cls": true,
+          "profile": true
+        },
+        "d2": {
+          "cls": false,
+          "profile": false
+        }
+      }
+    },
+    {
+      "item": "add-buddy prompt opens with input focused",
+      "ok": true,
+      "details": {
+        "focused": true
+      }
+    },
+    {
+      "item": "nonexistent name: \"User not found!\" in red, then reset + fade",
+      "ok": true,
+      "details": {
+        "text": "User not found!",
+        "color": "rgb(255, 76, 76)",
+        "inputColor": "rgb(255, 76, 76)",
+        "cls": "btn btn-clean btn-clean-secondary add-buddy-submit uppercase fail",
+        "msAfterEnter": 197,
+        "hiddenMsAfterResultSeen": 1287,
+        "resetText": "Add Buddy"
+      }
+    },
+    {
+      "item": "real account C: \"Friend request sent!\" and input clears",
+      "ok": true,
+      "details": {
+        "doneText": "Friend request sent!",
+        "cleared": ""
+      }
+    },
+    {
+      "item": "close + reopen: B selected again",
+      "ok": true,
+      "details": {
+        "active": [
+          "handbmw0ygy5j"
+        ],
+        "panel": "handbmw0ygy5j"
+      }
+    },
+    {
+      "item": "notification click opens list with B selected",
+      "ok": true,
+      "details": {
+        "open": true,
+        "active": [
+          "handbmw0ygy5j"
+        ],
+        "panel": "handbmw0ygy5j"
+      }
+    },
+    {
+      "item": "remove via trash + confirm empties the panel",
+      "ok": true,
+      "details": {
+        "dlgTitle": "Are you sure you want to remove handbmw0ygy5j?",
+        "hostChildren": 0,
+        "panel": false,
+        "rows": [],
+        "callout": false
+      }
+    },
+    {
+      "item": "no console errors / page errors on A",
+      "ok": true,
+      "details": {
+        "errs": [],
+        "pageErrors": [],
+        "bErrors": []
+      }
+    }
+  ]
+}
