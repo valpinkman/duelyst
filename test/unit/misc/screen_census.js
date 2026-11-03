@@ -71,9 +71,10 @@ describe('screen tour census', () => {
     // since the tutorial lessons became a shell (#58); 19 since the watch
     // screen did (#63); 18 since the rift run did (#65); 17 since the arena
     // did (#67); 16 since the codex did (#68); 15 since the profile did (#80);
-    // 14 since the rift runs list did (#77). If this moves, the census below
-    // says which screen to add or remove - update this number with it.
-    expect(layoutSites()).to.have.length(14);
+    // 14 since the rift runs list did (#77); 13 since the buddy selection did
+    // (#83). If this moves, the census below says which screen to add or
+    // remove - update this number with it.
+    expect(layoutSites()).to.have.length(13);
   });
 
   it('has exactly one census entry per LayoutView, in the file that declares it', () => {
@@ -112,16 +113,16 @@ describe('screen tour census', () => {
     }
   });
 
-  it('tours 25 screens: 11 LayoutViews, 4 concrete subclasses, 8 shells, crafting and the main menu', () => {
+  it('tours 26 screens: 11 LayoutViews, 4 concrete subclasses, 9 shells, crafting and the main menu', () => {
     const toured = SCREENS.filter((s) => s.status === 'toured');
     expect(toured.filter((s) => !s.kind)).to.have.length(11);
     expect(toured.filter((s) => s.kind === 'subclass')).to.have.length(4);
-    expect(toured.filter((s) => s.kind === 'Shell')).to.have.length(8);
+    expect(toured.filter((s) => s.kind === 'Shell')).to.have.length(9);
     expect(toured.map((s) => s.name)).to.include.members([
       'CraftingCompositeView',
       'MainMenuItemView',
     ]);
-    expect(toured).to.have.length(25);
+    expect(toured).to.have.length(26);
   });
 
   it('has exactly one toured census entry per shell, each checking its component rendered', () => {

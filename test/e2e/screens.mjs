@@ -96,6 +96,19 @@ export const SCREENS = [
     status: 'toured',
     landmark: '#app-buddies',
   },
+  {
+    // shown by BuddiesLayout when a buddy is picked: the tour seeds a second
+    // account as the tour account's buddy first (#12 D8)
+    name: 'BuddySelectionShell',
+    kind: 'Shell',
+    file: `${UI}/shells/buddy_selection_shell.ts`,
+    status: 'toured',
+    landmark: '#app-buddies .buddy-selection-shell',
+    landmarkDeclares: '.buddy-selection-shell',
+    // only <duelyst-buddy-selection> renders the buddy's header
+    visible: 'duelyst-buddy-selection .buddy-profile',
+    visibleDeclaredIn: `${UI}/components/buddies/buddy-selection.ts`,
+  },
 
   // --- play ----------------------------------------------------------------
   {
@@ -278,15 +291,6 @@ export const SCREENS = [
     landmark: '.popover-region > .player-popover.opponent-player',
     landmarkDeclares: '.player-popover.opponent-player',
     attached: true,
-  },
-  {
-    name: 'BuddySelectionLayout',
-    file: `${UI}/views/layouts/buddy_selection.ts`,
-    status: 'skipped',
-    reason:
-      'Shown by BuddiesLayout only when a buddy is selected (views/layouts/buddies.ts), so it ' +
-      'needs a second account and an accepted friend request (D3: seeding is a follow-up). ' +
-      'BuddiesLayout is toured with its empty friends list instead.',
   },
 ];
 

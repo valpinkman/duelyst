@@ -1,6 +1,7 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, devices } from '@playwright/test';
 import { takeErrors, watchConsole } from './helpers/console.mjs';
 import {
+  addBuddy,
   register,
   skipTutorialToMainMenu,
   uniqueUsername,
@@ -30,10 +31,12 @@ import { SCREENS, screen } from './screens.mjs';
  * (.env.dev: duelyst-ci). Each run registers a fresh account, so the seed
  * never collides with an earlier one.
  *
- * Not toured (with its reason in ./screens.mjs):
- *   - BuddySelectionLayout: needs a second account and an accepted friend
- *     request (D3).
- * test/unit/misc/screen_census.js fails if a LayoutView appears that this
+ * The buddy selection (BuddySelectionShell, #83) needs a buddy: a second
+ * account is registered in a browser context of its own and accepted through
+ * ChatManager's own handler (#12 D8), then picked in the buddy list the way
+ * BuddiesLayout.selectBuddy() does. That costs one more registration.
+ *
+ * Every screen in the census is toured; test/unit/misc/screen_census.js fails if a LayoutView appears that this
  * census does not account for.
  *
  * Errors are attributed per screen: the console buffer is drained at every
@@ -202,6 +205,23 @@ test.describe('screen tour', () => {
     await visit('ProfileShell', utilityModal('toggleProfile'));
     await visit('BuddiesLayout', utilityModal('toggleBuddyList'));
     await closeModal();
+    const buddy = await test.step('seed a buddy', () =>
+      addBuddy(page, {
+        url: '/',
+        contextOptions: { ...devices['Desktop Chrome'], baseURL: testInfo.project.use.baseURL },
+        username: uniqueUsername('buddy'),
+        password: 'e2e-duelyst-pw',
+      }));
+    await visit('BuddySelectionShell', async () => {
+      await utilityModal('toggleBuddyList')();
+      await inApp(
+        page,
+        (_seam, id) => window.NavigationManager.getInstance().getModalView().selectBuddy(id),
+        buddy.userId,
+      );
+    });
+    await closeModal();
+    await buddy.close();
 
     // --- play modes -------------------------------------------------------
     await visit('PlayLayout', () => inApp(page, (seam) => seam.App.showPlay('')));
