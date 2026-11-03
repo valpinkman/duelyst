@@ -211,7 +211,7 @@ const buddyName = (user) => `${user.slice(0, 16)}bd`;
 
 /**
  * The buddy list with the account's buddy picked, through
- * BuddiesLayout.selectBuddy(), which both sides of the buddy selection port
+ * BuddiesShell.selectBuddy(), which both sides of the buddy selection port
  * (#83) share; then wait for the conversation, which shows once chat is up.
  */
 async function buddySelection(page) {
@@ -253,7 +253,7 @@ export const SCREENS = [
   { name: 'ProfileShell-faction-levels', go: profileTab('faction_levels'), leave: closeModal },
   { name: 'ProfileShell-rank-history', go: profileTab('rank_history'), leave: closeModal },
   { name: 'ProfileShell-match-history', go: profileTab('match_history'), leave: closeModal },
-  { name: 'BuddiesLayout', go: utilityModal('toggleBuddyList'), leave: closeModal },
+  { name: 'BuddiesShell', go: utilityModal('toggleBuddyList'), leave: closeModal },
   { name: 'BuddySelectionShell', go: buddySelection, leave: closeModal },
   { name: 'PlayLayout', go: show('showPlay', '') },
   { name: 'ArenaShell', go: show('showPlay', { playMode: 'Gauntlet' }) },
