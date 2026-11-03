@@ -8,8 +8,9 @@
  *        --user vis1a2b3c --out /tmp/vis/before [--screens WatchShell,CodexLayout]
  *   node test/e2e/visual/capture.mjs --base-url ... --user vis1a2b3c --setup [--no-rift-run]
  *
- * `--setup` registers the account, skips the tutorial and claims its free
- * rift run, so that every later capture logs in to the same state. Captures
+ * `--setup` registers the account, skips the tutorial, claims its free rift
+ * run and gives it a buddy (a second account, `<user>bd`, left offline), so
+ * that every later capture logs in to the same state. Captures
  * then only log in: the before and after builds see the same account, the
  * same collection and the same rift run, on the same stack.
  *
@@ -39,7 +40,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { chromium, devices } from '@playwright/test';
-import { register, skipTutorialToMainMenu, waitForClientBoot } from '../helpers/session.mjs';
+import {
+  addBuddy,
+  register,
+  skipTutorialToMainMenu,
+  waitForClientBoot,
+} from '../helpers/session.mjs';
 
 export const VIEWPORT = { width: 1280, height: 720 };
 const PASSWORD = 'e2e-duelyst-pw';
@@ -200,6 +206,34 @@ const profileTab = (tab) => async (page) => {
   }, content);
 };
 
+/** The buddy --setup registers for `user`: a name of its own, at most 18 characters. */
+const buddyName = (user) => `${user.slice(0, 16)}bd`;
+
+/**
+ * The buddy list with the account's buddy picked, through
+ * BuddiesLayout.selectBuddy(), which both sides of the buddy selection port
+ * (#83) share; then wait for the conversation, which shows once chat is up.
+ */
+async function buddySelection(page) {
+  await utilityModal('toggleBuddyList')(page);
+  await page
+    .waitForFunction(
+      () => window.ChatManager.getInstance().getBuddiesCollection().getPresenceCollection().length,
+      null,
+      { timeout: 30_000 },
+    )
+    .catch(() => {
+      throw new Error('the account has no buddy: run capture.mjs --setup again');
+    });
+  await inApp(page, () => {
+    const presence = window.ChatManager.getInstance()
+      .getBuddiesCollection()
+      .getPresenceCollection();
+    window.NavigationManager.getInstance().getModalView().selectBuddy(presence.first().userId);
+  });
+  await page.waitForSelector('#app-buddies .buddy-selection .conversation');
+}
+
 /**
  * The screens, in the screen tour's order, with names from its census
  * (test/e2e/screens.mjs). `go` brings the screen up from anywhere, so any
@@ -220,6 +254,7 @@ export const SCREENS = [
   { name: 'ProfileShell-rank-history', go: profileTab('rank_history'), leave: closeModal },
   { name: 'ProfileShell-match-history', go: profileTab('match_history'), leave: closeModal },
   { name: 'BuddiesLayout', go: utilityModal('toggleBuddyList'), leave: closeModal },
+  { name: 'BuddySelectionShell', go: buddySelection, leave: closeModal },
   { name: 'PlayLayout', go: show('showPlay', '') },
   { name: 'ArenaShell', go: show('showPlay', { playMode: 'Gauntlet' }) },
   { name: 'RiftShell', go: riftLayout },
@@ -394,9 +429,18 @@ export async function capture({
       await skipTutorialToMainMenu(page);
       // without a run the rift screen shows its empty state (--no-rift-run)
       if (riftRunAtSetup) await riftRun(true)(page);
+      await mainMenu(page);
+      const buddy = await addBuddy(page, {
+        url: baseUrl,
+        contextOptions: { ...devices['Desktop Chrome'], viewport: VIEWPORT, deviceScaleFactor: 1 },
+        username: buddyName(user),
+        password: PASSWORD,
+      });
+      // offline from here on, so every capture shows the same buddy status
+      await buddy.close();
       await settle(page, inflight);
       console.log(
-        `set up ${user}: registered, tutorial skipped, ${riftRunAtSetup ? 'rift run claimed' : 'no rift run'}`,
+        `set up ${user}: registered, tutorial skipped, ${riftRunAtSetup ? 'rift run claimed' : 'no rift run'}, buddy ${buddyName(user)} added`,
       );
       return [];
     }

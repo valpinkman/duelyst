@@ -54,3 +54,47 @@ export async function skipTutorialToMainMenu(page) {
   }).toPass({ timeout: 120_000, intervals: [2000] });
   return mainMenuPlay;
 }
+
+/**
+ * Give the account logged in on `page` a buddy (#12 D8): register `username`
+ * in a browser context of its own, opened at `url` with `contextOptions`, then
+ * accept it from `page` through ChatManager's own acceptBuddyInvite, which
+ * writes both buddy lists. The buddy's client has to have come online first:
+ * the buddy list only shows a buddy whose presence record has a status.
+ *
+ * Resolves to { userId, close }. The buddy stays online until close(), which
+ * closes its context; its presence then goes to offline.
+ */
+export async function addBuddy(page, { url, contextOptions, username, password }) {
+  const context = await page.context().browser().newContext(contextOptions);
+  try {
+    const buddyPage = await context.newPage();
+    await buddyPage.goto(url);
+    await waitForClientBoot(buddyPage);
+    await register(buddyPage, username, password);
+    await buddyPage.waitForFunction(() => window.ChatManager.getInstance().isReady === true, null, {
+      timeout: 60_000,
+    });
+    const userId = await buddyPage.evaluate(() => window.ProfileManager.getInstance().get('id'));
+    // the presence writes go out once Firebase reports the connection
+    await buddyPage.waitForTimeout(2_000);
+
+    await page.evaluate(
+      (id) => window.ChatManager.getInstance().acceptBuddyInvite({ fromUserId: id }),
+      userId,
+    );
+    await page.waitForFunction(
+      (id) =>
+        window.ChatManager.getInstance()
+          .getBuddiesCollection()
+          .getPresenceCollection()
+          .some((p) => p.userId == id),
+      userId,
+      { timeout: 60_000 },
+    );
+    return { userId, close: () => context.close() };
+  } catch (e) {
+    await context.close();
+    throw e;
+  }
+}
