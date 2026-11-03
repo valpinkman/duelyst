@@ -12,7 +12,7 @@ var Animations = require('../animations');
 var BuddiesTemplate = require('../../templates/layouts/buddies.hbs');
 var BuddyListView = require('../item/buddy_list');
 var BuddySelectionEmptyView = require('../item/buddy_selection_empty');
-var BuddySelectionLayout = require('./buddy_selection');
+var BuddySelectionShell = require('../../shells/buddy_selection_shell');
 
 var BuddiesLayout = Backbone.Marionette.LayoutView.extend({
   id: 'app-buddies',
@@ -89,7 +89,7 @@ var BuddiesLayout = Backbone.Marionette.LayoutView.extend({
       if (this.presenceModelSelected) {
         this.ui.$buddiesControls.css('opacity', 0.5);
         // show buddy details and conversation
-        this.buddySelectionRegion.show(new BuddySelectionLayout({ model: presenceModel }));
+        this.buddySelectionRegion.show(new BuddySelectionShell({ model: presenceModel }));
       } else {
         this.ui.$buddiesControls.css('opacity', '');
         this.buddySelectionRegion.empty();

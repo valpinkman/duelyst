@@ -181,6 +181,11 @@
     max-height: 100%;
     background: rgba(0,0,0,0.75);
     border-left: 0.1rem solid rgba(255,255,255,0.1);
+	// shells/buddy_selection_shell.ts: the shell only adds a box between the
+	// region and <duelyst-buddy-selection>, which carries .buddy-selection itself
+	.buddy-selection-shell {
+		display: contents;
+	}
 	.buddy-selection-empty {
 		height: 100%;
 		display:flex;
