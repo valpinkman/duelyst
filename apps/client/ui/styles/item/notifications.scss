@@ -3,6 +3,12 @@
 #app-notifications-region {
   @include fillParent();
   z-index: 9999;
+
+  // shells/notifications_shell.ts: the component's own box sits between
+  // #app-notifications and the three region divs it renders
+  duelyst-notifications {
+    display: contents;
+  }
 }
 
 /* ---------- MAIN NOTIFICATIONS ---------- */

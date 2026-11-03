@@ -235,6 +235,51 @@ async function buddySelection(page) {
 }
 
 /**
+ * The notifications overlay over the main menu, with one row of each kind:
+ * a main notification with a call to action, a buddy invite (shown in the
+ * main list, after it), a buddy message sharing a replay, and a quest
+ * progress banner. They go straight into the manager's collections, which
+ * both sides of the notifications port (#88) render from, and the zeroed
+ * auto-dismiss timings are lifted first so the message and the banner stay.
+ */
+async function notifications(page) {
+  await mainMenu(page);
+  await inApp(page, () => {
+    window.CONFIG.BUDDY_MESSAGES_PREVIEW_DURATION = 600;
+    window.CONFIG.QUEST_NOTIFICATION_DURATION = 600;
+    const manager = window.NotificationsManager.getInstance();
+    manager.getMainNotifications().add({ message: 'Visual check: a main notification' });
+    manager.getBuddyInviteNotifications().add({
+      type: 'buddy_invite',
+      message: 'visbuddy wants to be your buddy',
+      ctaTitle: 'Accept',
+    });
+    manager.getBuddyMessageNotifications().add({
+      type: 'buddy_message',
+      body: 'Watch this game, it was a close one',
+      fromId: 'visual-check-buddy',
+      gameId: 'visual-check-game',
+      generalId: window.SDK.Cards.Faction1.General,
+    });
+    manager.getQuestProgressNotifications().add({
+      type: 'quest_progress',
+      title: 'Visual Check',
+      quest_instructions: 'Win 2 games with any faction',
+      progress: 1,
+      params: { completionProgress: 2 },
+    });
+  });
+  await page.waitForSelector('#app-quest-notifications .quest-notification');
+}
+
+const leaveNotifications = (page) =>
+  inApp(page, () => {
+    window.NotificationsManager.getInstance().dismissAllNotifications();
+    window.CONFIG.BUDDY_MESSAGES_PREVIEW_DURATION = 0;
+    window.CONFIG.QUEST_NOTIFICATION_DURATION = 0;
+  });
+
+/**
  * The screens, in the screen tour's order, with names from its census
  * (test/e2e/screens.mjs). `go` brings the screen up from anywhere, so any
  * subset can be captured; `leave` undoes state the next screen must not see;
@@ -248,6 +293,12 @@ export const SCREENS = [
   // the new-player hint bubbles are placed by script against buttons that are
   // still revealing, and land a pixel or two apart from one capture to the next
   { name: 'MainMenuItemView', go: mainMenu, mask: ['.popover'] },
+  {
+    name: 'NotificationsShell',
+    go: notifications,
+    leave: leaveNotifications,
+    mask: ['.popover'],
+  },
   { name: 'QuestLogShell', go: utilityModal('toggleQuestLog'), leave: closeModal },
   { name: 'ProfileShell', go: profileTab(null), leave: closeModal },
   { name: 'ProfileShell-faction-levels', go: profileTab('faction_levels'), leave: closeModal },

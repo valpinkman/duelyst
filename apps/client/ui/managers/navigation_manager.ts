@@ -25,7 +25,7 @@ var RSX = require('@duelyst/data/resources');
 var Scene = require('../../view/Scene');
 var Animations = require('../views/animations');
 var TransitionRegion = require('../views/regions/transition');
-var NotificationsLayout = require('../views/layouts/notifications');
+var NotificationsShell = require('../shells/notifications_shell');
 var ConfirmDialogItemView = require('../views/item/confirm_dialog');
 var ConfirmPurchaseDialogView = require('../views2/shop/confirm_purchase_dialog');
 var LoadingDialogItemView = require('../views/item/loading_dialog');
@@ -81,7 +81,7 @@ var NavigationManager = Manager.extend({
     });
 
     // show ui
-    this._notificationsRegion.show(new NotificationsLayout());
+    this._notificationsRegion.show(new NotificationsShell());
 
     // when server status manager connects, show the system status announcement item view that will auto-update based on system status
     ServerStatusManager.getInstance()
