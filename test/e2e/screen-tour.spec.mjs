@@ -198,7 +198,7 @@ test.describe('screen tour', () => {
     await visit('TutorialLessonsShell');
     await test.step('skip to the main menu', () => skipTutorialToMainMenu(page));
     await visit('MainMenuItemView');
-    await visit('NotificationsLayout');
+    await visit('NotificationsShell');
 
     // --- modals over the main menu ----------------------------------------
     await visit('QuestLogShell', utilityModal('toggleQuestLog'));

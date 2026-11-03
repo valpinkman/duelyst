@@ -60,12 +60,17 @@ export const SCREENS = [
     declaredIn: `${UI}/templates/item/main_menu.hbs`,
   },
   {
-    name: 'NotificationsLayout',
-    file: `${UI}/views/layouts/notifications.ts`,
+    name: 'NotificationsShell',
+    kind: 'Shell',
+    file: `${UI}/shells/notifications_shell.ts`,
     status: 'toured',
-    // always mounted by the navigation manager; empty until a notification
+    // always mounted by the navigation manager; empty until a notification,
+    // so its own root has no box
     landmark: '#app-notifications',
-    attached: true,
+    // only <duelyst-notifications> renders the region divs, which fill the
+    // notifications layer
+    visible: 'duelyst-notifications #app-main-notifications-region',
+    visibleDeclaredIn: `${UI}/components/notifications/notifications.ts`,
   },
 
   // --- modals over the main menu -------------------------------------------
