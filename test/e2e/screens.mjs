@@ -91,13 +91,17 @@ export const SCREENS = [
     visibleDeclaredIn: `${UI}/components/profile/profile.ts`,
   },
   {
-    name: 'BuddiesLayout',
-    file: `${UI}/views/layouts/buddies.ts`,
+    name: 'BuddiesShell',
+    kind: 'Shell',
+    file: `${UI}/shells/buddies_shell.ts`,
     status: 'toured',
     landmark: '#app-buddies',
+    // only <duelyst-buddies> renders the list's controls
+    visible: 'duelyst-buddies .buddy-controls',
+    visibleDeclaredIn: `${UI}/components/buddies/buddies.ts`,
   },
   {
-    // shown by BuddiesLayout when a buddy is picked: the tour seeds a second
+    // shown by BuddiesShell when a buddy is picked: the tour seeds a second
     // account as the tour account's buddy first (#12 D8)
     name: 'BuddySelectionShell',
     kind: 'Shell',

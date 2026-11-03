@@ -4,7 +4,7 @@
  * Marionette shell for <duelyst-buddy-selection> (docs/BACKBONE_REMOVAL_PLAN.md
  * §3.3, issue #83).
  *
- * BuddiesLayout shows the shell in its selection region when a buddy is
+ * BuddiesShell (#86) shows the shell in its selection region when a buddy is
  * picked. The shell's own root is `display: contents` (styles/layouts/
  * buddies.scss): the element is the old layout root, so the region lays it out
  * exactly as it did the Marionette layout. Its template is the tag alone.

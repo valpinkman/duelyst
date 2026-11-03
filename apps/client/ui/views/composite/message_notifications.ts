@@ -5,7 +5,7 @@ var NotificationsManager = require('../../managers/notifications_manager');
 var NavigationManager = require('../../managers/navigation_manager');
 var MessageItemView = require('../item/message');
 var audio_engine = require('../../../audio/audio_engine');
-var BuddiesLayout = require('../layouts/buddies');
+var BuddiesShell = require('../../shells/buddies_shell');
 var NotificationsCompositeView = require('./notifications');
 
 var MessageNotificationsView = NotificationsCompositeView.extend({
@@ -54,9 +54,9 @@ var MessageNotificationsView = NotificationsCompositeView.extend({
 
   onNotificationSelected: function (childView) {
     var message = childView.model;
-    NavigationManager.getInstance().toggleModalViewByClass(BuddiesLayout, null);
-    var buddiesLayout = NavigationManager.getInstance().getModalView();
-    buddiesLayout.selectBuddy(message.get('fromId'));
+    NavigationManager.getInstance().toggleModalViewByClass(BuddiesShell, null);
+    var buddiesShell = NavigationManager.getInstance().getModalView();
+    buddiesShell.selectBuddy(message.get('fromId'));
   },
 });
 

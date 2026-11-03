@@ -34,7 +34,7 @@ import { SCREENS, screen } from './screens.mjs';
  * The buddy selection (BuddySelectionShell, #83) needs a buddy: a second
  * account is registered in a browser context of its own and accepted through
  * ChatManager's own handler (#12 D8), then picked in the buddy list the way
- * BuddiesLayout.selectBuddy() does. That costs one more registration.
+ * BuddiesShell.selectBuddy() does. That costs one more registration.
  *
  * Every screen in the census is toured; test/unit/misc/screen_census.js fails if a LayoutView appears that this
  * census does not account for.
@@ -203,7 +203,7 @@ test.describe('screen tour', () => {
     // --- modals over the main menu ----------------------------------------
     await visit('QuestLogShell', utilityModal('toggleQuestLog'));
     await visit('ProfileShell', utilityModal('toggleProfile'));
-    await visit('BuddiesLayout', utilityModal('toggleBuddyList'));
+    await visit('BuddiesShell', utilityModal('toggleBuddyList'));
     await closeModal();
     const buddy = await test.step('seed a buddy', () =>
       addBuddy(page, {
